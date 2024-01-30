@@ -1,0 +1,272 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model c_municipaux {
+  nom             String?
+  parti_politique String?
+  telephone1      String?
+  telephone2      String?
+  email           String?
+  fonction        String?
+  sexe            String?
+  code_commune    Int
+  id              Int     @id @default(autoincrement())
+}
+
+model c_regionaux {
+  pays            String?
+  region          String?
+  departement     String?
+  qualite         String?
+  nom             String?
+  sexe            String?
+  mandat          String?
+  a_naissance     String?
+  parti_politique String?
+  telephone       String?
+  email           String?
+  fonction        String?
+  niveau_etude    String?
+  diplome         String?
+  profil          String?
+  id              Int     @id @default(autoincrement())
+}
+
+model chefferies {
+  region            String?
+  departement       String?
+  arrondissement    String?
+  groupement        String?
+  denomination      String?
+  classification    String?
+  acte_creation     String?
+  chef_traditionnel String?
+  id                Int     @id @default(autoincrement())
+}
+
+model deputes {
+  region          String?
+  departement     String?
+  circonscription String?
+  nom             String
+  qualite         String?
+  statut          String?
+  legislative     String?
+  sexe            String?
+  parti_politique String?
+  a_naissance     String?
+  niveau_etude    String?
+  diplome         String?
+  profil          String?
+  commission      String?
+  fonction        String?
+  telephone1      String?
+  telephone2      String?
+  email           String?
+  pays            String?
+  id              Int     @id @default(autoincrement())
+}
+
+model gouverneurs {
+  pays         String?
+  chapitre     String?
+  region       String?
+  fonction     String?
+  nom          String?
+  sexe         String?
+  qualifiction String?
+  decret       String?
+  telephone1   String?
+  telephone2   String?
+  fax_bureau2  String?
+  email        String?
+  fax_bureau1  String?
+  id           Int     @id @default(autoincrement())
+}
+
+model indicateur {
+  id              Int    @id @default(autoincrement())
+  code_cible      String
+  code_indicateur String
+  indicateur      String
+}
+
+model maires {
+  pays            String?
+  region          String?
+  departement     String?
+  commune         String?
+  code            String?
+  nom             String?
+  sexe            String?
+  mandat          String?
+  parti_politique String?
+  telephone1      String?
+  telephone2      String?
+  email           String?
+  fonction        String?
+  id              Int     @id @default(autoincrement())
+}
+
+model ministeres {
+  id                 Int     @id @default(autoincrement())
+  code_secteur       Int
+  chapitre           String
+  odds               String?
+  site_internet      String?
+  locaisation        String?
+  ministre           String?
+  ministre_delegue   String?
+  secretaire_d_etat  String?
+  secretaire_general String?
+  designation        String?
+  directeur          String?
+
+  @@map("ministères")
+}
+
+model odd {
+  code_odd  Int         @id
+  code_pays Int
+  libelle   String
+  secteurs   secteur[]  @relation("ODD_Secteurs")
+  pays      pays        @relation(fields: [code_pays], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pays")
+  odd_cible odd_cible[]
+}
+
+model odd_cible {
+  code_odd   Int?
+  code_cible String
+  libelle    String?
+  id         Int     @id @default(autoincrement())
+  odd        odd?    @relation(fields: [code_odd], references: [code_odd], onDelete: NoAction, onUpdate: NoAction, map: "odd_oddCibles")
+}
+
+model parti_politique {
+  designation_sigle    String
+  acte_creation        String?
+  president            String?
+  siege                String?
+  telephone            String?
+  telephone2           String?
+  site_internet        String?
+  code_pays            Int
+  code_parti_politique Int     @id @default(autoincrement())
+  pays                 pays    @relation(fields: [code_pays], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pp_pays")
+}
+
+model pays {
+  libelle            String?
+  masculin           Int?
+  feminin            Int?
+  total              String?
+  date_creation      String?
+  densite            String?
+  superficie         String?
+  nb_region          Int?
+  nb_departement     Int?
+  nb_commune         Int?
+  date_independance  String?
+  date_reunification String?
+  date_unification   String?
+  id                 Int               @id @default(autoincrement())
+  odd                odd[]
+  parti_politique    parti_politique[]
+  secteur            secteur[]
+}
+
+model prefets {
+  region        String?
+  departement   String?
+  fonction      String?
+  nom           String?
+  telephone1    String?
+  fax_bureau    String?
+  email         String?
+  sexe          String?
+  qualification String?
+  decret        String?
+  pays          String?
+  id            Int     @id @default(autoincrement())
+}
+
+model programme {
+  code         Int      @id @default(autoincrement())
+  libelle      String
+  objectifs    String?
+  libelleAng   String?
+  coordination String?
+  horizon      String?
+  date_debut   String?
+  date_fin     String?
+  montant      Decimal? @db.Decimal
+  responsable  String?
+  description  String?
+  axes         String?
+  strategie    String?
+  resultats    String?
+  hypothese    String?
+}
+
+model secteur {
+  code_pays Int
+  code      Int    @id @default(autoincrement())
+  secteur   String
+  odd        odd[]      @relation("ODD_Secteurs")
+  pays      pays   @relation(fields: [code_pays], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model senateurs {
+  region          String?
+  qualite         String?
+  statut          String?
+  mandat          String?
+  sexe            String?
+  mode            String?
+  parti_politique String?
+  a_naissance     String?
+  niveau_etude    String?
+  diplome         String?
+  profil          String?
+  commission      String?
+  fonction        String?
+  telephone1      String?
+  telephone2      String?
+  email           String?
+  nom             String?
+  pays            String?
+  id              Int     @id @default(autoincrement())
+}
+
+model sous_prefets {
+  pays           String?
+  region         String?
+  departement    String?
+  arrondissement String?
+  fonction       String?
+  nom            String?
+  telephone      String?
+  fax_bureau     String?
+  email          String?
+  sexe           String?
+  qualifcation   String?
+  decret         String?
+  id             Int     @id @default(autoincrement())
+}
+
+model zone {
+  code_pays        Int
+  code_region      Int
+  region           String?
+  code_departement Int?
+  departement      String?
+  code_commune     Int?
+  commune          String?
+  id               Int     @id @default(autoincrement())
+}
